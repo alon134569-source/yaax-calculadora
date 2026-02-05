@@ -282,7 +282,7 @@
       </div>
 
       <!-- CTA (cambia a tu WhatsApp o web) -->
-      <a class="btn" id="cta_btn" href="#" target="_blank" rel="noopener">Cotiza ahora</a>
+      <a class="btn" id="cta_btn" href="#" target="_blank" rel="noopener"> ahora</a>
     </div>
   </section>
 
@@ -396,10 +396,28 @@
     const PRICE_PER_FRACTION_MXN = 500000;
     const ANIOS = [1, 2, 3, 4, 5, 10, 15];
 
-    // ✅ pon aquí tu WhatsApp o tu web
-    // ejemplo WhatsApp:
-    // const CTA_URL = "https://wa.me/525534175021?text=Hola%20quiero%20cotizar%20YAAX%20en%20Tulum";
-    const CTA_URL = "https://wa.me/522227663220?text=Hola%20quiero%20cotizar%20YAAX%20en%20Tulum";
+   const CTA_URL = "https://wa.me/522227663220?text=Hola%20quiero%20cotizar%20YAAX%20en%20Tulum";
+
+function wireCTA(){
+  const btn = document.getElementById("cta_btn");
+  if(!btn) return;
+
+  // 1) Setea href por si acaso
+  btn.href = CTA_URL;
+  btn.target = "_blank";
+  btn.rel = "noopener";
+
+  // 2) Fuerza el click (esto evita que # recargue tu página)
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Abre WhatsApp en otra pestaña
+    const w = window.open(CTA_URL, "_blank", "noopener");
+    // fallback por si el navegador bloquea popups
+    if (!w) window.location.href = CTA_URL;
+  }, { capture: true });
+}
+
 
     const I18N = {
       es: {
@@ -768,9 +786,11 @@
       document.getElementById('inp_moneda').value = "MXN";
       document.getElementById('inp_lang').value = "es";
       rebuild();
+      setCTA();
     });
   </script>
 </body>
 </html>
+
 
 
