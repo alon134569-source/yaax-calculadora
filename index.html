@@ -783,16 +783,28 @@ Plotly.react('chart_plus', [traceP], layoutP, {displayModeBar: true, responsive:
       document.getElementById(id).addEventListener('input', rebuild);
       document.getElementById(id).addEventListener('change', rebuild);
     });
+    ['inp_fracciones','inp_rend','inp_plus','inp_anio_anotar','inp_moneda','inp_fx','inp_years','inp_lang'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) {
+      console.warn("No existe el input:", id);
+      return;
+      }
+      el.addEventListener('input', rebuild);
+      el.addEventListener('change', rebuild);
+    });
 
-    window.addEventListener('load', () => {
+
+      window.addEventListener('load', () => {
       document.getElementById('inp_moneda').value = "MXN";
       document.getElementById('inp_lang').value = "es";
-      rebuild();
       setCTA();
+      rebuild();
     });
+
   </script>
 </body>
 </html>
+
 
 
 
