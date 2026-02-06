@@ -390,7 +390,7 @@
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <script src="https://cdn.plot.ly/-2.30.0.min.js"></script>
 
   <script>
     const PRICE_PER_FRACTION_MXN = 500000;
@@ -711,64 +711,66 @@ function wireCTA(){
       if (idx === -1) idx = x.length - 1;
 
       // Gráfica Rendimiento
-      const traceR = {
-        x: x, y: yRend,
-        mode: 'lines+markers',
-        name: t.thRendGan,
-        hovertemplate: `${t.thAnio}=%{x}<br>${t.thRendGan}=%{y:,.0f} ${moneda}<extra></extra>`
-      };
-      const layoutR = {
-        margin: {t: 10, r: 10, b: 45, l: 60},
-        xaxis: {title: t.thAnio},
-        yaxis: {title: t.yR(moneda)},
-        hovermode: 'x unified',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: {color: '#1b1b1b'},
-        annotations: [{
-          x: x[idx],
-          y: yRend[idx],
-          text: t.annR(x[idx], fmtMoney(yRend[idx], moneda, lang)),
-          showarrow: true, arrowhead: 3, ax: 0, ay: -40
-        }]
-      };
-      Plotly.newPlot('chart_rend', [traceR], layoutR, {displayModeBar: true, responsive: true});
+const traceR = {
+  x: x, y: yRend,
+  mode: 'lines+markers',
+  name: t.thRendGan,
+  hovertemplate: `${t.thAnio}=%{x}<br>${t.thRendGan}=%{y:,.0f} ${moneda}<extra></extra>`
+};
+const layoutR = {
+  margin: {t: 10, r: 10, b: 45, l: 60},
+  xaxis: {title: t.thAnio},
+  yaxis: {title: t.yR(moneda)},
+  hovermode: 'x unified',
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  plot_bgcolor: 'rgba(0,0,0,0)',
+  font: {color: '#1b1b1b'},
+  annotations: [{
+    x: x[idx],
+    y: yRend[idx],
+    text: t.annR(x[idx], fmtMoney(yRend[idx], moneda, lang)),
+    showarrow: true, arrowhead: 3, ax: 0, ay: -40
+  }]
+};
+Plotly.react('chart_rend', [traceR], layoutR, {displayModeBar: true, responsive: true});
 
-      // Gráfica Plusvalía
-      const traceP = {
-        x: x, y: yPlus,
-        mode: 'lines+markers',
-        name: t.thVenta,
-        hovertemplate: `${t.thAnio}=%{x}<br>${t.thVenta}=%{y:,.0f} ${moneda}<extra></extra>`
-      };
-      const layoutP = {
-        margin: {t: 10, r: 10, b: 45, l: 60},
-        xaxis: {title: t.thAnio},
-        yaxis: {title: t.yP(moneda)},
-        hovermode: 'x unified',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: {color: '#1b1b1b'},
-        shapes: [{
-          type: 'line',
-          x0: Math.min(...x), x1: Math.max(...x),
-          y0: inversion, y1: inversion,
-          line: {dash: 'dash', width: 1}
-        }],
-        annotations: [{
-          x: x[idx],
-          y: yPlus[idx],
-          text: t.annP(x[idx], fmtMoney(yPlus[idx], moneda, lang)),
-          showarrow: true, arrowhead: 3, ax: 0, ay: -40
-        },{
-          x: x[Math.floor(x.length/2)],
-          y: inversion,
-          text: t.kpiInv,
-          showarrow: false,
-          yshift: 10
-        }]
-      };
-      Plotly.newPlot('chart_plus', [traceP], layoutP, {displayModeBar: true, responsive: true});
+// Gráfica Plusvalía
+const traceP = {
+  x: x, y: yPlus,
+  mode: 'lines+markers',
+  name: t.thVenta,
+  hovertemplate: `${t.thAnio}=%{x}<br>${t.thVenta}=%{y:,.0f} ${moneda}<extra></extra>`
+};
+const layoutP = {
+  margin: {t: 10, r: 10, b: 45, l: 60},
+  xaxis: {title: t.thAnio},
+  yaxis: {title: t.yP(moneda)},
+  hovermode: 'x unified',
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  plot_bgcolor: 'rgba(0,0,0,0)',
+  font: {color: '#1b1b1b'},
+  shapes: [{
+    type: 'line',
+    x0: Math.min(...x), x1: Math.max(...x),
+    y0: inversion, y1: inversion,
+    line: {dash: 'dash', width: 1}
+  }],
+  annotations: [{
+    x: x[idx],
+    y: yPlus[idx],
+    text: t.annP(x[idx], fmtMoney(yPlus[idx], moneda, lang)),
+    showarrow: true, arrowhead: 3, ax: 0, ay: -40
+  },{
+    x: x[Math.floor(x.length/2)],
+    y: inversion,
+    text: t.kpiInv,
+    showarrow: false,
+    yshift: 10
+  }]
+};
+Plotly.react('chart_plus', [traceP], layoutP, {displayModeBar: true, responsive: true});
+
+
 
       // Mobile resize
       setTimeout(() => {
@@ -791,6 +793,7 @@ function wireCTA(){
   </script>
 </body>
 </html>
+
 
 
 
