@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arven House • YAAX – Calculadora</title>
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+
+  <style>
+    :root{
+      --coconut: #FFFBF2;
+      --butter:  #EFE6AB;
+      --bosque:  #41472D;
+
+      --bg: var(--coconut);
+      --card: rgba(255, 251, 242, .88);
+      --text: #1b1b1b;
+      --muted: rgba(27,27,27,.65);
+
+      --brand: var(--bosque);
+      --accent: var(--butter);
+
+      --shadow2: 0 10px 30px rgba(0,0,0,.10);
+      --radius: 18px;
+    }
+
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-serif, "Georgia", "Times New Roman", serif;
+    }
+
+    .hero{
+      position: relative;
+      min-height: 300px;
+      display:flex;
+      align-items:flex-end;
+      padding: 26px 18px 22px 18px;
+      background:
+        linear-gradient(180deg, rgba(65,71,45,.30), rgba(65,71,45,.62)),
+        url("assets/hero.jpg") center/cover no-repeat;
+    }
+    .hero-inner{
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      display:flex;
+      gap:16px;
+      align-items:flex-end;
+      justify-content:space-between;
+    }
+
+    .brandbox{
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+
+    .logo{
+      width: 66px;
+      height: 66px;
+      border-radius: 18px;
+      background: rgba(255,251,242,.92);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      flex: 0 0 auto;
+      border: 1px solid rgba(239,230,171,.55);
+      position: relative;
+    }
+    .logo img{ width:100%; height:100%; object-fit:contain; padding:8px; display:block; }
+    .logo .fallback{
+      position:absolute; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      color: var(--brand);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .hero h1{
+      margin:0;
+      color: var(--coconut);
+      font-size: clamp(22px, 2.8vw, 38px);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      font-weight: 800;
+    }
+    .hero p{
+      margin:6px 0 0 0;
+      color: rgba(255,251,242,.88);
+      max-width: 820px;
+      line-height: 1.35;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .pill{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,251,242,.10);
+      border: 1px solid rgba(255,251,242,.24);
+      color: rgba(255,251,242,.92);
+      backdrop-filter: blur(10px);
+      font-size: 13px;
+      flex-wrap: wrap;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(239,230,171,.95);
+      border: 1px solid rgba(255,251,242,.35);
+      color: #1b1b1b;
+      text-decoration:none;
+      font-weight: 800;
+      box-shadow: 0 12px 26px rgba(0,0,0,.20);
+      white-space: nowrap;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .container{ width: min(1200px, 100%); margin: 0 auto; padding: 18px 18px 28px 18px; }
+
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(65,71,45,.10);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(10px);
+    }
+    .label{
+      font-size: 12px;
+      color: rgba(27,27,27,.65);
+      margin-bottom: 6px;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .value{
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing:.2px;
+      color: var(--brand);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .input{
+      width: 100%;
+      padding: 10px 10px;
+      border: 1px solid rgba(65,71,45,.18);
+      border-radius: 12px;
+      font-size: 14px;
+      background: rgba(255,251,242,.95);
+      outline: none;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .controls{ display:grid; grid-template-columns: repeat(7, minmax(150px, 1fr)); gap: 12px; margin: 0 0 14px 0; }
+    .kpis{ display:grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 12px; margin: 0 0 16px 0; }
+    .charts{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0 0 16px 0; }
+    .chart-title{
+      font-weight: 900;
+      color: var(--brand);
+      margin: 4px 0 10px 2px;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    #chart_rend, #chart_plus { width: 100%; min-height: 360px; }
+
+    .table-wrap{
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: rgba(255,251,242,.76);
+      border: 1px solid rgba(65,71,45,.10);
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(8px);
+    }
+
+    .footer{
+      margin-top: 18px;
+      color: rgba(27,27,27,.60);
+      font-size: 12px;
+      text-align:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .footer b{ color: var(--brand); }
+
+    @media (max-width: 1200px){
+      .controls{ grid-template-columns: repeat(2, minmax(160px, 1fr)); }
+      .kpis{ grid-template-columns: repeat(2, minmax(160px, 1fr)); }
+      .charts{ grid-template-columns: 1fr; }
+      .hero-inner{ flex-direction: column; align-items:flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="brandbox">
+        <div class="logo">
+          <img id="logo_img" src="assets/arvenhouse-logo.png" alt="Arven House">
+          <div class="fallback" id="logo_fallback">A</div>
+        </div>
+        <div>
+          <h1 id="h_title">Arven House • YAAX</h1>
+          <p id="hero_desc"></p>
+          <div class="pill" id="subtitle"></div>
+        </div>
+      </div>
+      <a class="btn" id="cta_btn" href="#" target="_blank" rel="noopener">Cotiza ahora</a>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <div class="controls">
+      <div class="card">
+        <div class="label" id="lbl_fracciones">Fracciones</div>
+        <input id="inp_fracciones" class="input" type="number" min="1" step="1" value="2">
+      </div>
+      <div class="card">
+        <div class="label" id="lbl_rend">Rendimiento anual (%)</div>
+        <input id="inp_rend" class="input" type="number" step="0.1" value="10.0">
+      </div>
+      <div class="card">
+        <div class="label" id="lbl_plus">Plusvalía anual (%)</div>
+        <input id="inp_plus" class="input" type="number" step="0.1" value="15.0">
+      </div>
+      <div class="card">
+        <div class="label" id="lbl_anio">Año para texto</div>
+        <input id="inp_anio_anotar" class="input" type="number" min="1" step="1" value="4">
+      </div>
+      <div class="card">
+        <div class="label" id="lbl_moneda">Moneda</div>
+        <select id="inp_moneda" class="input">
+          <option value="MXN">MXN</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+      <div class="card">
+        <div class="label" id="lbl_fx">Tipo de cambio (MXN por 1 USD)</div>
+        <input id="inp_fx" class="input" type="number" step="0.01" value="17.2">
+      </div>
+      <div class="card">
+        <div class="label" id="lbl_lang">Idioma</div>
+        <select id="inp_lang" class="input">
+          <option value="es">Español</option>
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="card"><div class="label" id="kpi_lbl_precio">Precio por fracción</div><div class="value" id="kpi_precio_frac"></div></div>
+      <div class="card"><div class="label" id="kpi_lbl_inv">Inversión inicial</div><div class="value" id="kpi_inversion"></div></div>
+      <div class="card"><div class="label" id="kpi_lbl_rend">Rendimiento (simple)</div><div class="value" id="kpi_rend"></div></div>
+      <div class="card"><div class="label" id="kpi_lbl_plus">Plusvalía (simple)</div><div class="value" id="kpi_plus"></div></div>
+    </div>
+
+    <div class="charts">
+      <div class="card">
+        <div class="chart-title" id="chart_title_rend">Gráfica: Rendimiento</div>
+        <div id="chart_rend"></div>
+      </div>
+      <div class="card">
+        <div class="chart-title" id="chart_title_plus">Gráfica: Plusvalía</div>
+        <div id="chart_plus"></div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabla" class="display" style="width:100%">
+        <thead>
+          <tr>
+            <th id="th_anio">Año</th>
+            <th id="th_rend_gan">Rendimiento (ganancia)</th>
+            <th id="th_total_rend">Total con rendimiento</th>
+            <th id="th_plus_gan">Plusvalía (ganancia)</th>
+            <th id="th_venta">Venta estimada</th>
+            <th id="th_venta_frac">Venta por fracción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="footer" id="footer_text"></div>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+
+  <script>
+    const PRICE_PER_FRACTION_MXN = 500000;
+    const ANIOS = [1, 2, 3, 4, 5, 10, 15];
+
+    // ✅ TU WhatsApp:
+    const CTA_URL = "https://wa.me/522227663220?text=Hola%20quiero%20cotizar%20YAAX%20en%20Tulum";
+
+    function wireCTA(){
+      const btn = document.getElementById("cta_btn");
+      btn.href = CTA_URL;
+      btn.target = "_blank";
+      btn.rel = "noopener";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.open(CTA_URL, "_blank", "noopener");
+      });
+    }
+
+    function wireLogoFallback(){
+      const img = document.getElementById("logo_img");
+      const fb  = document.getElementById("logo_fallback");
+      img.addEventListener("error", () => {
+        img.style.display = "none";
+        fb.style.display = "flex";
+      });
+    }
+
+    // ✅ I18N COMPLETO
+    const I18N = {
+      es: {
+        heroDesc: "“Un legado natural” — Proyección de rendimiento (interés simple) y plusvalía para fracciones inmobiliarias.",
+        cta: "Cotiza ahora",
+        fracciones: "Fracciones",
+        rendimiento: "Rendimiento anual (%)",
+        plusvalia: "Plusvalía anual (%)",
+        anioTexto: "Año para texto",
+        moneda: "Moneda",
+        fx: "Tipo de cambio (MXN por 1 USD)",
+        idioma: "Idioma",
+        kpiPrecio: "Precio por fracción",
+        kpiInv: "Inversión inicial",
+        kpiRend: "Rendimiento (simple)",
+        kpiPlus: "Plusvalía (simple)",
+        chartRTitle: "Gráfica: Rendimiento (ganancia acumulada)",
+        chartPTitle: "Gráfica: Plusvalía (venta estimada)",
+        thAnio: "Año",
+        thRendGan: "Rendimiento (ganancia)",
+        thTotalRend: "Total con rendimiento",
+        thPlusGan: "Plusvalía (ganancia)",
+        thVenta: "Venta estimada",
+        thVentaFrac: "Venta por fracción",
+        subtitle: (f, inv, rend, plus, mon, fxText) =>
+          `<b>Fracciones:</b> ${f} &nbsp;|&nbsp; <b>Inversión:</b> ${inv} &nbsp;|&nbsp; <b>Rendimiento:</b> ${rend}% &nbsp;|&nbsp; <b>Plusvalía:</b> ${plus}% &nbsp;|&nbsp; <b>Moneda:</b> ${mon} ${fxText}`,
+        annR: (year, value) => `Este sería tu rendimiento en año ${year}: ${value}`,
+        annP: (year, value) => `A esto venderías tu fracción en año ${year}: ${value}`,
+        yR: (mon) => `Rendimiento acumulado (${mon})`,
+        yP: (mon) => `Precio estimado de venta (${mon})`,
+        dt: {
+          search: "Buscar:",
+          lengthMenu: "Mostrar _MENU_ filas",
+          info: "Mostrando _START_ a _END_ de _TOTAL_",
+          infoEmpty: "Sin datos",
+          infoFiltered: "(filtrado de _MAX_ en total)",
+          paginate: { first: "Primero", last: "Último", next: "Siguiente", previous: "Anterior" }
+        },
+        footer: 'Hecho para <b>Arven House</b> • Proyecto <b>YAAX</b> • “Un legado natural”'
+      },
+      en: {
+        heroDesc: "“A natural legacy” — Projection of yield (simple interest) and appreciation for real estate fractions.",
+        cta: "Get a quote",
+        fracciones: "Fractions",
+        rendimiento: "Annual yield (%)",
+        plusvalia: "Annual appreciation (%)",
+        anioTexto: "Annotation year",
+        moneda: "Currency",
+        fx: "Exchange rate (MXN per 1 USD)",
+        idioma: "Language",
+        kpiPrecio: "Price per fraction",
+        kpiInv: "Initial investment",
+        kpiRend: "Yield (simple)",
+        kpiPlus: "Appreciation (simple)",
+        chartRTitle: "Chart: Yield (accumulated profit)",
+        chartPTitle: "Chart: Appreciation (estimated sale price)",
+        thAnio: "Year",
+        thRendGan: "Yield (profit)",
+        thTotalRend: "Total with yield",
+        thPlusGan: "Appreciation (profit)",
+        thVenta: "Estimated sale",
+        thVentaFrac: "Sale per fraction",
+        subtitle: (f, inv, rend, plus, mon, fxText) =>
+          `<b>Fractions:</b> ${f} &nbsp;|&nbsp; <b>Investment:</b> ${inv} &nbsp;|&nbsp; <b>Yield:</b> ${rend}% &nbsp;|&nbsp; <b>Appreciation:</b> ${plus}% &nbsp;|&nbsp; <b>Currency:</b> ${mon} ${fxText}`,
+        annR: (year, value) => `This would be your yield in year ${year}: ${value}`,
+        annP: (year, value) => `You could sell your fraction in year ${year} for: ${value}`,
+        yR: (mon) => `Accumulated yield (${mon})`,
+        yP: (mon) => `Estimated sale price (${mon})`,
+        dt: {
+          search: "Search:",
+          lengthMenu: "Show _MENU_ rows",
+          info: "Showing _START_ to _END_ of _TOTAL_",
+          infoEmpty: "No data",
+          infoFiltered: "(filtered from _MAX_ total)",
+          paginate: { first: "First", last: "Last", next: "Next", previous: "Prev" }
+        },
+        footer: 'Made for <b>Arven House</b> • Project <b>YAAX</b> • “A natural legacy”'
+      },
+      fr: {
+        heroDesc: "“Un héritage naturel” — Projection du rendement (intérêt simple) et de la plus-value pour des fractions immobilières.",
+        cta: "Demander un devis",
+        fracciones: "Fractions",
+        rendimiento: "Rendement annuel (%)",
+        plusvalia: "Plus-value annuelle (%)",
+        anioTexto: "Année d’annotation",
+        moneda: "Devise",
+        fx: "Taux de change (MXN pour 1 USD)",
+        idioma: "Langue",
+        kpiPrecio: "Prix par fraction",
+        kpiInv: "Investissement initial",
+        kpiRend: "Rendement (simple)",
+        kpiPlus: "Plus-value (simple)",
+        chartRTitle: "Graphique : Rendement (gain cumulé)",
+        chartPTitle: "Graphique : Plus-value (prix de vente estimé)",
+        thAnio: "Année",
+        thRendGan: "Rendement (gain)",
+        thTotalRend: "Total avec rendement",
+        thPlusGan: "Plus-value (gain)",
+        thVenta: "Vente estimée",
+        thVentaFrac: "Vente par fraction",
+        subtitle: (f, inv, rend, plus, mon, fxText) =>
+          `<b>Fractions :</b> ${f} &nbsp;|&nbsp; <b>Investissement :</b> ${inv} &nbsp;|&nbsp; <b>Rendement :</b> ${rend}% &nbsp;|&nbsp; <b>Plus-value :</b> ${plus}% &nbsp;|&nbsp; <b>Devise :</b> ${mon} ${fxText}`,
+        annR: (year, value) => `Voici votre rendement à l’année ${year} : ${value}`,
+        annP: (year, value) => `Vous pourriez vendre votre fraction à l’année ${year} pour : ${value}`,
+        yR: (mon) => `Rendement cumulé (${mon})`,
+        yP: (mon) => `Prix de vente estimé (${mon})`,
+        dt: {
+          search: "Rechercher :",
+          lengthMenu: "Afficher _MENU_ lignes",
+          info: "Affichage de _START_ à _END_ sur _TOTAL_",
+          infoEmpty: "Aucune donnée",
+          infoFiltered: "(filtré de _MAX_ au total)",
+          paginate: { first: "Premier", last: "Dernier", next: "Suiv.", previous: "Préc." }
+        },
+        footer: 'Réalisé pour <b>Arven House</b> • Projet <b>YAAX</b> • “Un héritage naturel”'
+      }
+    };
+
+    function getLocale(lang){ return (lang==='fr')?'fr-FR':(lang==='en'?'en-US':'es-MX'); }
+    function fmtMoney(n, moneda, lang){ return new Intl.NumberFormat(getLocale(lang), {style:'currency', currency: moneda}).format(n); }
+    function montoSimple(principal, tasa, anios){ return principal * (1 + tasa * anios); }
+
+    function applyLanguage(lang){
+      const t = I18N[lang] || I18N.es;
+      document.documentElement.lang = lang;
+
+      document.getElementById("hero_desc").textContent = t.heroDesc;
+      document.getElementById("cta_btn").textContent = t.cta;
+
+      document.getElementById("lbl_fracciones").textContent = t.fracciones;
+      document.getElementById("lbl_rend").textContent = t.rendimiento;
+      document.getElementById("lbl_plus").textContent = t.plusvalia;
+      document.getElementById("lbl_anio").textContent = t.anioTexto;
+      document.getElementById("lbl_moneda").textContent = t.moneda;
+      document.getElementById("lbl_fx").textContent = t.fx;
+      document.getElementById("lbl_lang").textContent = t.idioma;
+
+      document.getElementById("kpi_lbl_precio").textContent = t.kpiPrecio;
+      document.getElementById("kpi_lbl_inv").textContent = t.kpiInv;
+      document.getElementById("kpi_lbl_rend").textContent = t.kpiRend;
+      document.getElementById("kpi_lbl_plus").textContent = t.kpiPlus;
+
+      document.getElementById("chart_title_rend").textContent = t.chartRTitle;
+      document.getElementById("chart_title_plus").textContent = t.chartPTitle;
+
+      document.getElementById("th_anio").textContent = t.thAnio;
+      document.getElementById("th_rend_gan").textContent = t.thRendGan;
+      document.getElementById("th_total_rend").textContent = t.thTotalRend;
+      document.getElementById("th_plus_gan").textContent = t.thPlusGan;
+      document.getElementById("th_venta").textContent = t.thVenta;
+      document.getElementById("th_venta_frac").textContent = t.thVentaFrac;
+
+      document.getElementById("footer_text").innerHTML = t.footer;
+    }
+
+    let dataTable = null;
+    let lastLang = null;
+
+    function rebuild(){
+      const lang = document.getElementById("inp_lang").value || "es";
+      const t = I18N[lang] || I18N.es;
+      applyLanguage(lang);
+
+      const fracciones = Math.max(1, parseInt(document.getElementById('inp_fracciones').value || '1', 10));
+      const rendPct = parseFloat(document.getElementById('inp_rend').value || '0');
+      const plusPct = parseFloat(document.getElementById('inp_plus').value || '0');
+      const anioAnotar = Math.max(1, parseInt(document.getElementById('inp_anio_anotar').value || '1', 10));
+      const moneda = document.getElementById('inp_moneda').value || 'MXN';
+      const fx = Math.max(0.0001, parseFloat(document.getElementById('inp_fx').value || '17.2'));
+
+      const inversion_mxn = fracciones * PRICE_PER_FRACTION_MXN;
+      const r = rendPct / 100.0;
+      const g = plusPct / 100.0;
+
+      const conv = (mxn) => (moneda === 'USD' ? (mxn / fx) : mxn);
+
+      const inversion = conv(inversion_mxn);
+      const precio_frac = conv(PRICE_PER_FRACTION_MXN);
+
+      const fxText = (moneda === "USD") ? ` (FX: ${fx.toFixed(2)} MXN/USD)` : "";
+      document.getElementById('subtitle').innerHTML = t.subtitle(
+        fracciones,
+        fmtMoney(inversion, moneda, lang),
+        rendPct.toFixed(2),
+        plusPct.toFixed(2),
+        moneda,
+        fxText
+      );
+
+      document.getElementById('kpi_precio_frac').textContent = fmtMoney(precio_frac, moneda, lang);
+      document.getElementById('kpi_inversion').textContent = fmtMoney(inversion, moneda, lang);
+      document.getElementById('kpi_rend').textContent = rendPct.toFixed(2) + "%";
+      document.getElementById('kpi_plus').textContent = plusPct.toFixed(2) + "%";
+
+      const rows = [];
+      const x = [];
+      const yRend = [];
+      const yPlus = [];
+
+      for (const a of ANIOS){
+        const totalR_mxn = montoSimple(inversion_mxn, r, a);
+        const ganR_mxn = totalR_mxn - inversion_mxn;
+
+        const venta_mxn = montoSimple(inversion_mxn, g, a);
+        const ganP_mxn = venta_mxn - inversion_mxn;
+
+        const ventaFrac_mxn = montoSimple(PRICE_PER_FRACTION_MXN, g, a);
+
+        const totalR = conv(totalR_mxn);
+        const ganR = conv(ganR_mxn);
+        const venta = conv(venta_mxn);
+        const ganP = conv(ganP_mxn);
+        const ventaFrac = conv(ventaFrac_mxn);
+
+        x.push(a);
+        yRend.push(ganR);
+        yPlus.push(venta);
+
+        rows.push([a,
+          fmtMoney(ganR, moneda, lang),
+          fmtMoney(totalR, moneda, lang),
+          fmtMoney(ganP, moneda, lang),
+          fmtMoney(venta, moneda, lang),
+          fmtMoney(ventaFrac, moneda, lang),
+        ]);
+      }
+
+      // ✅ DataTables: si cambia idioma, reinicia para aplicar textos
+      if (dataTable && lastLang !== lang){
+        dataTable.destroy();
+        dataTable = null;
+      }
+      lastLang = lang;
+
+      if (!dataTable){
+        dataTable = $('#tabla').DataTable({
+          pageLength: 10,
+          lengthMenu: [5,10,25,50,100],
+          order: [[0,'asc']],
+          language: t.dt,
+          data: rows
+        });
+      } else {
+        dataTable.clear();
+        dataTable.rows.add(rows);
+        dataTable.draw(false);
+      }
+
+      let idx = x.indexOf(anioAnotar);
+      if (idx === -1) idx = x.length - 1;
+
+      const traceR = { x, y: yRend, mode:'lines+markers', name: t.thRendGan };
+      const layoutR = {
+        margin:{t:10,r:10,b:45,l:60},
+        xaxis:{title: t.thAnio},
+        yaxis:{title: t.yR(moneda)},
+        hovermode:'x unified',
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)',
+        annotations:[{ x:x[idx], y:yRend[idx], text: t.annR(x[idx], fmtMoney(yRend[idx], moneda, lang)), showarrow:true, arrowhead:3, ax:0, ay:-40 }]
+      };
+      Plotly.react('chart_rend', [traceR], layoutR, {displayModeBar:true, responsive:true});
+
+      const traceP = { x, y: yPlus, mode:'lines+markers', name: t.thVenta };
+      const layoutP = {
+        margin:{t:10,r:10,b:45,l:60},
+        xaxis:{title: t.thAnio},
+        yaxis:{title: t.yP(moneda)},
+        hovermode:'x unified',
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)',
+        shapes:[{ type:'line', x0:Math.min(...x), x1:Math.max(...x), y0:inversion, y1:inversion, line:{dash:'dash', width:1} }],
+        annotations:[
+          { x:x[idx], y:yPlus[idx], text: t.annP(x[idx], fmtMoney(yPlus[idx], moneda, lang)), showarrow:true, arrowhead:3, ax:0, ay:-40 },
+          { x:x[Math.floor(x.length/2)], y:inversion, text: t.kpiInv, showarrow:false, yshift:10 }
+        ]
+      };
+      Plotly.react('chart_plus', [traceP], layoutP, {displayModeBar:true, responsive:true});
+    }
+
+    function bind(){
+      ['inp_fracciones','inp_rend','inp_plus','inp_anio_anotar','inp_moneda','inp_fx','inp_lang'].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('input', rebuild);
+        el.addEventListener('change', rebuild);
+      });
+    }
+
+    window.addEventListener('load', () => {
+      wireCTA();
+      wireLogoFallback();
+      bind();
+      document.getElementById('inp_moneda').value = "MXN";
+      document.getElementById('inp_lang').value = "es";
+      rebuild();
+    });
+  </script>
+</body>
+</html>
